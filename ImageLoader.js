@@ -1,5 +1,6 @@
 function ImageLoader(){
   this.images = {};
+  this.tileCut = [];
 }
 
 ImageLoader.prototype.load = function (key, imgURL) {
@@ -24,4 +25,10 @@ ImageLoader.prototype.drawTile = function(ctx,key,tipo,dx,dy,dw,dh){
   this.tileCut[tipo].ox, this.tileCut[tipo].oy,
   this.tileCut[tipo].w, this.tileCut[tipo].h,
   dx, dy, dw, dh);
+}
+
+ImageLoader.prototype.drawBG = function(ctx, key, w, h) {
+	ctx.drawImage(this.images[key], 
+	0,0, this.images[key].width, this.images[key].height,
+	0,0, w, h);
 }

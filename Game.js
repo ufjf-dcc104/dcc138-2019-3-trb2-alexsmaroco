@@ -8,6 +8,8 @@ var images;
 var anterior = 0;
 var frame = 0;
 var fim = false;
+var isMainMenu = true;
+var numPlayers = 2;
 
 function init(){
   canvas = document.getElementsByTagName('canvas')[0];
@@ -19,6 +21,7 @@ function init(){
 	images.load("tiles", "assets/Tileset.png");
 	images.load("bombs", "assets/Bombs.png");
 	images.load("powerups", "assets/Powerups.png");
+	images.load("MainMenuBG", "assets/MMenuBG.png");
   map = new Map(Math.floor(canvas.height/40), Math.floor(canvas.width/40));
   //map.images = images;
   map.setCells([
@@ -57,9 +60,40 @@ function init(){
   pc2.y = 380+80;
   pc2.vidas = 3;
   pc2.imunidade = 1;
-  pc2.imgkey = "pc";
+	pc2.imgkey = "pc";
+	
+	isMainMenu = true;
   initControls();
-  requestAnimationFrame(passo);
+  requestAnimationFrame(mainMenu);
+}
+
+function mainMenu(t) {
+	dt = (t-anterior)/1000;
+	currentAnimation = requestAnimationFrame(mainMenu);
+	ctx.clearRect(0,0, canvas.width, canvas.height);
+	images.drawBG(ctx, "MainMenuBG", canvas.width, canvas.height);
+	ctx.textAlign = "center";
+	ctx.font = "30px Impact";
+	ctx.save();
+	if(this.numPlayers == 1) {
+		ctx.fillStyle = "yellow";
+		ctx.fillText("Start", canvas.width/2+60, 150);
+	} else {
+		ctx.fillStyle = "black";
+	}
+	ctx.fillText("1P", canvas.width/2, 150);
+	ctx.restore();
+	ctx.save();
+	if(this.numPlayers == 2) {
+		ctx.fillStyle = "yellow";
+		ctx.fillText("Start", canvas.width/2+60, 180);
+	} else {
+		ctx.fillStyle = "black";
+	}
+	ctx.fillText("2P", canvas.width/2, 180);
+	ctx.restore();
+
+	anterior = t;
 }
 
 
@@ -331,101 +365,122 @@ function desenhaInfo(ctx) {
 
 
 function initControls(){
-  addEventListener('keydown', function(e){
-    switch (e.keyCode) {
+	if(isMainMenu) {
+		addEventListener('keydown', menuControls);
+	}
+	else {
+		removeEventListener('keydown', menuControls);
 
-		// player 1
-	  case 32:
-		dropBomb(pc1, map);
-		break;
-	  case 65:
-        pc1.vx = -100;
-		pc1.vy = 0;
-        pc1.pose = 2;
-        e.preventDefault();
-        break;
-      case 87:
-        pc1.vy = -100;
-		pc1.vx = 0;
-        pc1.pose = 3;
-        e.preventDefault();
-        break;
-      case 68:
-        pc1.vx = 100;
-		pc1.vy = 0;
-        pc1.pose = 0;
-        e.preventDefault();
-        break;
-      case 83:
-        pc1.vy = 100;
-		pc1.vx = 0;
-        pc1.pose = 1;
-        e.preventDefault();
-        break;
-	
-		// player 2
-	  case 13:
-		dropBomb(pc2, map);
-		break;
-      case 37:
-		pc2.vx = -100;
-		pc2.vy = 0;
-        pc2.pose = 2;
-        e.preventDefault();
-        break;
-      case 38:
-        pc2.vy = -100;
-		pc2.vx = 0;
-        pc2.pose = 3;
-        e.preventDefault();
-        break;
-      case 39:
-        pc2.vx = 100;
-		pc2.vy = 0;
-        pc2.pose = 0;
-        e.preventDefault();
-        break;
-      case 40:
-        pc2.vy = 100;
-		pc2.vx = 0;
-        pc2.pose = 1;
-        e.preventDefault();
-        break;
-      default:
+		addEventListener('keydown', function(e){
+			switch (e.keyCode) {
 
-    }
-  });
-  addEventListener('keyup', function(e){
-    switch (e.keyCode) {
-		//player 1
-	  case 65:
-        pc1.vx = 0;
-        break;
-      case 87:
-        pc1.vy = 0;
-        break;
-      case 68:
-        pc1.vx = 0;
-        break;
-      case 83:
-        pc1.vy = 0;
-        break;
-	
-		// player 2
-      case 37:
-		pc2.vx = 0;
-        break;
-      case 38:
-        pc2.vy = 0;
-        break;
-      case 39:
-        pc2.vx = 0;
-        break;
-      case 40:
-        pc2.vy = 0;
-        break;
-      default:
+			// player 1
+			case 32:
+			dropBomb(pc1, map);
+			break;
+			case 65:
+					pc1.vx = -100;
+			pc1.vy = 0;
+					pc1.pose = 2;
+					e.preventDefault();
+					break;
+				case 87:
+					pc1.vy = -100;
+			pc1.vx = 0;
+					pc1.pose = 3;
+					e.preventDefault();
+					break;
+				case 68:
+					pc1.vx = 100;
+			pc1.vy = 0;
+					pc1.pose = 0;
+					e.preventDefault();
+					break;
+				case 83:
+					pc1.vy = 100;
+			pc1.vx = 0;
+					pc1.pose = 1;
+					e.preventDefault();
+					break;
+		
+			// player 2
+			case 13:
+			dropBomb(pc2, map);
+			break;
+				case 37:
+			pc2.vx = -100;
+			pc2.vy = 0;
+					pc2.pose = 2;
+					e.preventDefault();
+					break;
+				case 38:
+					pc2.vy = -100;
+			pc2.vx = 0;
+					pc2.pose = 3;
+					e.preventDefault();
+					break;
+				case 39:
+					pc2.vx = 100;
+			pc2.vy = 0;
+					pc2.pose = 0;
+					e.preventDefault();
+					break;
+				case 40:
+					pc2.vy = 100;
+			pc2.vx = 0;
+					pc2.pose = 1;
+					e.preventDefault();
+					break;
+				default:
 
-    }
-  });
+			}
+		});
+		addEventListener('keyup', function(e){
+			switch (e.keyCode) {
+			//player 1
+			case 65:
+					pc1.vx = 0;
+					break;
+				case 87:
+					pc1.vy = 0;
+					break;
+				case 68:
+					pc1.vx = 0;
+					break;
+				case 83:
+					pc1.vy = 0;
+					break;
+		
+			// player 2
+				case 37:
+			pc2.vx = 0;
+					break;
+				case 38:
+					pc2.vy = 0;
+					break;
+				case 39:
+					pc2.vx = 0;
+					break;
+				case 40:
+					pc2.vy = 0;
+					break;
+				default:
+
+			}
+		});
+	}
+}
+
+function menuControls(e) {
+	switch(e.keyCode) {
+		case 13:
+			if(this.isMainMenu) {
+				this.isMainMenu = false;
+				cancelAnimationFrame(currentAnimation);
+				initControls();
+				currentAnimation = requestAnimationFrame(passo);
+				break;
+			}
+			break;
+	}
 }

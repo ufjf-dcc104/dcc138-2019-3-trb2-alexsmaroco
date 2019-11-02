@@ -20,29 +20,33 @@ Map.prototype.desenhar = function (ctx, images) {
 
   for (var r = 0; r < this.cells.length; r++) {
     for (var c = 0; c < this.cells[0].length; c++) {
-		switch(this.cells[r][c].tipo) {
-			case "paredeInd":
-				images.drawTile(ctx,
-					"tiles", 1,
-					c*this.SIZE,r*this.SIZE,
-					this.SIZE, this.SIZE);
-				break;
-			case "paredeDest":
-				images.drawTile(ctx,
-					"tiles", 2,
-					c*this.SIZE,r*this.SIZE,
-					this.SIZE, this.SIZE);
-				break;
-			case "bomba":
-				//ctx.fillStyle = "grey";
-				//ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
-				break;
-			case "vazio":
-				if(this.cells[r][c].tipoObjeto === "powerup") {
-					this.cells[r][c].objeto.desenhaPowerup(ctx);
-				}
-				break;
-		}
+			images.drawTile(ctx,
+				"tiles", 0,
+				c*this.SIZE,r*this.SIZE,
+				this.SIZE, this.SIZE);
+			switch(this.cells[r][c].tipo) {
+				case "paredeInd":
+					images.drawTile(ctx,
+						"tiles", 1,
+						c*this.SIZE,r*this.SIZE,
+						this.SIZE, this.SIZE);
+					break;
+				case "paredeDest":
+					images.drawTile(ctx,
+						"tiles", 2,
+						c*this.SIZE,r*this.SIZE,
+						this.SIZE, this.SIZE);
+					break;
+				case "bomba":
+					//ctx.fillStyle = "grey";
+					//ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
+					break;
+				case "vazio":
+					if(this.cells[r][c].tipoObjeto === "powerup") {
+						this.cells[r][c].objeto.desenhaPowerup(ctx);
+					}
+					break;
+			}
     }
   }
   
