@@ -16,23 +16,22 @@ function Map(rows, columns) {
 
 
 
-Map.prototype.desenhar = function (ctx) {
+Map.prototype.desenhar = function (ctx, images) {
 
-/*
-for(var i = 0; i < this.powerups.length; i++) {
-	this.powerups[i].desenhaPowerup(ctx);
-}
-*/
   for (var r = 0; r < this.cells.length; r++) {
     for (var c = 0; c < this.cells[0].length; c++) {
 		switch(this.cells[r][c].tipo) {
 			case "paredeInd":
-				ctx.fillStyle = "red";
-				ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
+				images.drawTile(ctx,
+					"tiles", 1,
+					c*this.SIZE,r*this.SIZE,
+					this.SIZE, this.SIZE);
 				break;
 			case "paredeDest":
-				ctx.fillStyle = "grey";
-				ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
+				images.drawTile(ctx,
+					"tiles", 2,
+					c*this.SIZE,r*this.SIZE,
+					this.SIZE, this.SIZE);
 				break;
 			case "bomba":
 				//ctx.fillStyle = "grey";

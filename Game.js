@@ -15,7 +15,10 @@ function init(){
   canvas.height = (13*40)+20;
   ctx = canvas.getContext("2d");
   images = new ImageLoader();
-  images.load("pc","assets/pc.png");
+	images.load("pc","assets/pc.png");
+	images.load("tiles", "assets/Tileset.png");
+	images.load("bombs", "assets/Bombs.png");
+	images.load("powerups", "assets/Powerups.png");
   map = new Map(Math.floor(canvas.height/40), Math.floor(canvas.width/40));
   //map.images = images;
   map.setCells([
@@ -27,12 +30,17 @@ function init(){
     [1,2,2,2,2,2,2,2,2,2,2,2,1],
     [1,2,1,2,1,2,1,2,1,2,1,2,1],
     [1,2,2,2,2,2,2,2,2,2,2,2,1],
-	[1,2,1,2,1,2,1,2,1,2,1,2,1],
-	[1,2,2,2,2,2,2,2,2,2,2,2,1],
+	  [1,2,1,2,1,2,1,2,1,2,1,2,1],
+	  [1,2,2,2,2,2,2,2,2,2,2,2,1],
     [1,2,1,2,1,2,1,2,1,2,1,0,1],
     [1,2,2,2,2,2,2,2,2,2,0,0,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ]);
+	]);
+	images.tileCut = [
+		{ox:3, oy:2, w:30, h:30 , frames:1},
+		{ox:37, oy:2, w:29, h:30 , frames:1},
+		{ox:70, oy:2, w:30, h:30 , frames:1},
+	];
   //map.cooldownPowerup = 5;
   map.spawnPowerupFixo(10);
   pc1 = new Sprite();
