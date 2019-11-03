@@ -57,24 +57,15 @@ Sprite.prototype.desenharPose = function (ctx, images) {
 Sprite.prototype.desenharBomba = function(ctx) {
 	ctx.save();
 	ctx.translate(this.x, this.y);
-	ctx.beginPath();
-	ctx.arc(0, 0, this.w/2, 0, 2*Math.PI);
-	ctx.fill();
-	ctx.closePath();
+	images.drawBomb(ctx, "bombs", Math.floor(this.frame),
+	-14, -14,
+	images.bombCut[Math.floor(this.frame)].w*1.5, images.bombCut[Math.floor(this.frame)].h*1.5
+	);
 	ctx.restore();
+	this.frame+=0.1;
+	if(this.frame > 2) this.frame = 0;
 }
 
-
-Sprite.prototype.desenhaExplosao = function(ctx,x,y) {
-	ctx.save();
-	ctx.translate(x, y);
-	ctx.fillStyle = "black";
-	ctx.beginPath();
-	ctx.arc(0, 0, 10, 0, 2*Math.PI);
-	ctx.fill();
-	ctx.closePath();
-	ctx.restore();
-}
 
 Sprite.prototype.desenhaPowerup = function(ctx, images) {
     ctx.save();
