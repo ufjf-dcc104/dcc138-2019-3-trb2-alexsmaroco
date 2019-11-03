@@ -44,15 +44,20 @@ function init(){
 		{ox:37, oy:2, w:29, h:30 , frames:1},
 		{ox:70, oy:2, w:30, h:30 , frames:1},
 	];
+	images.powerupCut = [
+    {ox:4, oy:4, w:22, h:22 , frames:1},
+    {ox:52, oy:4, w:22, h:22 , frames:1},
+		{ox:100, oy:4, w:22, h:22 , frames:1},
+	];
   //map.cooldownPowerup = 5;
-  map.spawnPowerupFixo(10);
   pc1 = new Sprite();
   pc1.id = "1";
   pc1.x = 60;
   pc1.y = 60;
   pc1.vidas = 3;
   pc1.imunidade = 1;
-  pc1.imgkey = "pc";
+	pc1.imgkey = "pc";
+	pc1.power = 2;
 
   pc2 = new Sprite();
   pc2.id = "2";
@@ -126,7 +131,7 @@ function passo(t){
 	map.desenhar(ctx, images);
 	pc1.desenhar(ctx, images);
 	pc2.desenhar(ctx, images);
-    desenhaInfo(ctx);
+  desenhaInfo(ctx);
 	anterior = t;
 }
 
@@ -154,6 +159,7 @@ function explodir(bomb, map) {
 	}
 	// verifica os arredores
 	for(var i = 1; i <= bomb.power; i++) {
+		// cima
 		if(gy-i >= 0 && destruir1) {
 			switch(map.cells[gy-i][gx].tipo) {
 				case "paredeInd":
@@ -168,16 +174,6 @@ function explodir(bomb, map) {
 					chainReaction((gy-i), gx);
 					break;
 			}
-			// para de destruir ao encontrar parede
-			/*
-			if(map.cells[gy-i][gx].tipo === "paredeInd") {
-				destruir1 = false;
-			}
-			if(map.cells[gy-i][gx].tipo === "paredeDest") {
-				map.cells[gy-i][gx].tipo = "vazio";
-				destruir1 = false;
-			}
-			*/
 			if(pc1.gx == gx && pc1.gy == gy-i) {
 				atingiup1 = true;
 			}
@@ -188,30 +184,21 @@ function explodir(bomb, map) {
 				bomb.desenhaExplosao(ctx,bomb.x, (gy-i)*map.SIZE+map.SIZE/2);
 			}
 		}
+		// baixo
 		if(gy+i < map.cells.length && destruir2) {
-			// para de destruir ao encontrar parede
 			switch(map.cells[gy+i][gx].tipo) {
 				case "paredeInd":
-					destruir1 = false;
+					destruir2 = false;
 					break;
 				case "paredeDest":
 					map.cells[gy+i][gx].tipo = "vazio";
-					destruir1 = false;
+					destruir2 = false;
 					break;
 				case "bomba":
 					map.cells[gy+i][gx].tipo = "vazio";
 					chainReaction((gy+i), gx);
 					break;
 			}
-			/*
-			if(map.cells[gy+i][gx].tipo === "paredeInd") {
-				destruir2 = false;
-			}
-			if(map.cells[gy+i][gx].tipo === "paredeDest") {
-				map.cells[gy+i][gx].tipo = "vazio";
-				destruir2 = false;
-			}
-			*/
 			if(pc1.gx == gx && pc1.gy == gy+i) {
 				atingiup1 = true;
 			}
@@ -222,30 +209,21 @@ function explodir(bomb, map) {
 				bomb.desenhaExplosao(ctx,bomb.x, (gy+i)*map.SIZE+map.SIZE/2);
 			}
 		}
+		// esquerda
 		if(gx-i >= 0 && destruir3) {
-			// para de destruir ao encontrar parede
 			switch(map.cells[gy][gx-i].tipo) {
 				case "paredeInd":
-					destruir1 = false;
+					destruir3 = false;
 					break;
 				case "paredeDest":
 					map.cells[gy][gx-i].tipo = "vazio";
-					destruir1 = false;
+					destruir3 = false;
 					break;
 				case "bomba":
 					map.cells[gy][gx-i].tipo = "vazio";
 					chainReaction(gy, (gx-i));
 					break;
 			}
-			/*
-			if(map.cells[gy][gx-i].tipo === "paredeInd") {
-				destruir3 = false;
-			}
-			if(map.cells[gy][gx-i].tipo === "paredeDest") {
-				map.cells[gy][gx-i].tipo = "vazio";
-				destruir3 = false;
-			}
-			*/
 			if(pc1.gx == gx-i && pc1.gy == gy) {
 				atingiup1 = true;
 			}
@@ -256,15 +234,15 @@ function explodir(bomb, map) {
 				bomb.desenhaExplosao(ctx,(gx-i)*map.SIZE+map.SIZE/2, bomb.y);
 			}
 		}
+		// direita
 		if(gx+i < map.cells[0].length && destruir4) {
-			// para de destruir ao encontrar parede
 			switch(map.cells[gy][gx+i].tipo) {
 				case "paredeInd":
-					destruir1 = false;
+					destruir4 = false;
 					break;
 				case "paredeDest":
 					map.cells[gy][gx+i].tipo = "vazio";
-					destruir1 = false;
+					destruir4 = false;
 					break;
 				case "bomba":
 					map.cells[gy][gx+i].tipo = "vazio";
@@ -478,6 +456,7 @@ function menuControls(e) {
 				this.isMainMenu = false;
 				cancelAnimationFrame(currentAnimation);
 				initControls();
+				map.spawnPowerupFixo(10);
 				currentAnimation = requestAnimationFrame(passo);
 				break;
 			}
