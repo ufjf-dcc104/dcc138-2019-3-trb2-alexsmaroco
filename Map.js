@@ -43,7 +43,7 @@ Map.prototype.desenhar = function (ctx, images) {
 					break;
 				case "vazio":
 					if(this.cells[r][c].tipoObjeto === "powerup") {
-						this.cells[r][c].objeto.desenhaPowerup(ctx);
+						this.cells[r][c].objeto.desenhaPowerup(ctx, images);
 					}
 					break;
 			}
@@ -111,6 +111,7 @@ Map.prototype.spawnPowerupFixo = function(qtd) {
 		powerup.y = Math.floor(gy*map.SIZE + map.SIZE/2);
 		powerup.gx = gx;
 		powerup.gy = gy;
+		powerup.imgkey = "powerup";
 		//this.cells[gy][gx] += 0.1;
 		powerup.tipo = tipo;
 		this.cells[gy][gx].objeto = powerup;

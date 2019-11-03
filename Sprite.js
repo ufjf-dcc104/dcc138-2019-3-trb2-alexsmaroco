@@ -76,19 +76,14 @@ Sprite.prototype.desenhaExplosao = function(ctx,x,y) {
 	ctx.restore();
 }
 
-Sprite.prototype.desenhaPowerup = function(ctx) {
-	ctx.save();
-	ctx.translate(this.x, this.y);
-	if(this.tipo == 0) {
-		ctx.fillStyle = "brown";
-	} else if(this.tipo == 1) {
-		ctx.fillStyle = "green";
-	}
-	ctx.beginPath();
-	ctx.arc(0, 0, 15, 0, 2*Math.PI);
-	ctx.fill();
-	ctx.closePath();
-	ctx.restore();
+Sprite.prototype.desenhaPowerup = function(ctx, images) {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    images.drawPowerup(ctx, "powerups", this.tipo,
+    -16, -16,
+    images.powerupCut[this.tipo].w*1.3, images.powerupCut[this.tipo].h*1.3
+    );
+    ctx.restore();
 }
 
 Sprite.prototype.mover = function (map, dt) {

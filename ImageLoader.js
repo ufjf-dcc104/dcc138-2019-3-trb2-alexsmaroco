@@ -1,6 +1,7 @@
 function ImageLoader(){
   this.images = {};
   this.tileCut = [];
+  this.powerupCut = [];
 }
 
 ImageLoader.prototype.load = function (key, imgURL) {
@@ -31,4 +32,11 @@ ImageLoader.prototype.drawBG = function(ctx, key, w, h) {
 	ctx.drawImage(this.images[key], 
 	0,0, this.images[key].width, this.images[key].height,
 	0,0, w, h);
+}
+
+ImageLoader.prototype.drawPowerup = function(ctx,key,tipo,dx,dy,dw,dh){
+  this.drawSprite(ctx, key,
+  this.powerupCut[tipo].ox, this.powerupCut[tipo].oy,
+  this.powerupCut[tipo].w, this.powerupCut[tipo].h,
+  dx, dy, dw, dh);
 }
