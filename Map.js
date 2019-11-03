@@ -11,7 +11,8 @@ function Map(rows, columns) {
 		this.cells[r][c] = {tipo: "vazio", objeto: null, tipoObjeto: undefined};
 	  //this.cells[r][c] = 0;
     }
-  }
+	}
+	this.animExplosion = []; // guarda animações de explosoes
 }
 
 
@@ -49,7 +50,17 @@ Map.prototype.desenhar = function (ctx, images) {
 			}
     }
   }
-  
+	
+	for(var i = this.animExplosion.length-1; i >= 0; i--) {
+    images.drawExplosion(ctx, this.animExplosion[i].imgkey, this.animExplosion[i].tipo,
+    this.SIZE*this.animExplosion[i].gx, this.SIZE*this.animExplosion[i].gy,
+    this.SIZE, this.SIZE
+  	);
+    this.animExplosion[i].duracao-=dt;
+    if(this.animExplosion[i].duracao < 0) {
+      this.animExplosion.splice(i,1);
+    }
+  }
   
 };
 

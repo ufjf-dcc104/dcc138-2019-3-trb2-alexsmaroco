@@ -10,6 +10,8 @@ var frame = 0;
 var fim = false;
 var isMainMenu = true;
 var numPlayers = 2;
+var explosionHandler = []; // suaviza explosoes em cadeia
+var explosionDelay = 0.1; // suaviza explosoes em cadeia
 
 function init(){
   canvas = document.getElementsByTagName('canvas')[0];
@@ -49,6 +51,17 @@ function init(){
     {ox:52, oy:4, w:22, h:22 , frames:1},
 		{ox:100, oy:4, w:22, h:22 , frames:1},
 	];
+	images.explosionCut = [
+    {ox:1, oy:20, w:30, h:30 , frames:1}, // centro
+    {ox:62, oy:20, w:30, h:30 , frames:1}, // up/down
+    {ox:31, oy:20, w:29, h:30 , frames:1}, // left/right
+	];
+	images.bombCut = [
+    {ox:0, oy:1, w:16, h:18 , frames:1},
+    {ox:20, oy:1, w:16, h:16 , frames:1},
+    {ox:36, oy:1, w:16, h:16 , frames:1},
+	];
+
   //map.cooldownPowerup = 5;
   pc1 = new Sprite();
   pc1.id = "1";
@@ -122,6 +135,12 @@ function passo(t){
 				pc2.bombs.splice(i, 1);
 			}
 		}
+		explosionDelay-=dt;
+		if(explosionHandler.length > 0 && explosionDelay <= 0) {
+			var prox = explosionHandler.shift();
+			explodir(prox, map);
+			explosionDelay = 0.1;
+		}
 		// spawna powerups de tempos em tempos !! pode spawnar mais de um no mesmo lugar
 		//map.spawnPowerup(dt);
 		pc1.mover(map, dt);
@@ -135,7 +154,34 @@ function passo(t){
 	anterior = t;
 }
 
+// Define cada setor da explosao
+function queueExplosion(map, gx, gy, tipo) {
+	var exp = {};
+	exp.gx = gx;
+	exp.gy = gy;
+	exp.tipo = tipo;
+	exp.imgkey = "bombs";
+	exp.duracao = 0.25;
+	map.animExplosion.push(exp);
+}
 
+function chainReaction(gy, gx) {
+	for(let i = pc1.bombs.length-1; i >= 0; i--) {
+		if(pc1.bombs[i].gx == gx && pc1.bombs[i].gy == gy) {
+			//console.log("encontrou bomba");
+			explosionHandler.push(pc1.bombs[i]);
+			pc1.bombs.splice(i, 1);
+			return;
+		}
+	}
+	for(let i = pc2.bombs.length-1; i >= 0; i--) {
+		if(pc2.bombs[i].gx == gx && pc2.bombs[i].gy == gy) {
+			explosionHandler.push(pc2.bombs[i]);
+			pc2.bombs.splice(i, 1);
+			return;
+		}
+	}
+}
 
 function explodir(bomb, map) {
 	var gx = Math.floor(bomb.x/map.SIZE);
@@ -149,6 +195,7 @@ function explodir(bomb, map) {
 	
 	// tira bomba do grid, se for trata-la como parede
 	map.cells[gy][gx].tipo = "vazio";
+	queueExplosion(map, gx, gy, 0);
 	
 	// caso fique em cima da bomba
 	if(pc1.gx == gx && pc1.gy == gy) {
@@ -180,9 +227,7 @@ function explodir(bomb, map) {
 			if(pc2.gx == gx && pc2.gy == gy-i) {
 				atingiup2 = true;
 			}
-			if(destruir1) {
-				bomb.desenhaExplosao(ctx,bomb.x, (gy-i)*map.SIZE+map.SIZE/2);
-			}
+			if(destruir1) queueExplosion(map, gx, gy-i, 1);
 		}
 		// baixo
 		if(gy+i < map.cells.length && destruir2) {
@@ -205,9 +250,7 @@ function explodir(bomb, map) {
 			if(pc2.gx == gx && pc2.gy == gy+i) {
 				atingiup2 = true;
 			}
-			if(destruir2) {
-				bomb.desenhaExplosao(ctx,bomb.x, (gy+i)*map.SIZE+map.SIZE/2);
-			}
+			if(destruir2) queueExplosion(map, gx, gy+i, 1);
 		}
 		// esquerda
 		if(gx-i >= 0 && destruir3) {
@@ -230,9 +273,7 @@ function explodir(bomb, map) {
 			if(pc2.gx == gx-i && pc2.gy == gy) {
 				atingiup2 = true;
 			}
-			if(destruir3) {
-				bomb.desenhaExplosao(ctx,(gx-i)*map.SIZE+map.SIZE/2, bomb.y);
-			}
+			if(destruir3) queueExplosion(map, gx-i, gy, 2);
 		}
 		// direita
 		if(gx+i < map.cells[0].length && destruir4) {
@@ -264,9 +305,7 @@ function explodir(bomb, map) {
 			if(pc2.gx == gx+i && pc2.gy == gy) {
 				atingiup2 = true;
 			}
-			if(destruir4) {
-				bomb.desenhaExplosao(ctx,(gx+i)*map.SIZE+map.SIZE/2, bomb.y);
-			}
+			if(destruir4) queueExplosion(map, gx+i, gy, 2);
 		}
 	}
 	
@@ -280,23 +319,6 @@ function explodir(bomb, map) {
 	}
 }
 
-function chainReaction(gy, gx) {
-	for(let i = pc1.bombs.length-1; i >= 0; i--) {
-		if(pc1.bombs[i].gx == gx && pc1.bombs[i].gy == gy) {
-			console.log("encontrou bomba");
-			explodir(pc1.bombs[i], map);
-			pc1.bombs.splice(i, 1);
-			return;
-		}
-	}
-	for(let i = pc2.bombs.length-1; i >= 0; i--) {
-		if(pc2.bombs[i].gx == gx && pc2.bombs[i].gy == gy) {
-			explodir(pc2.bombs[i], map);
-			pc2.bombs.splice(i, 1);
-			return;
-		}
-	}
-}
 
 function dropBomb(player, map) {
 	if(player.cooldown < 0 && player.bombs.length < player.maxBombs) {
