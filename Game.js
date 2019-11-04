@@ -19,11 +19,11 @@ function init(){
   canvas.height = (13*40)+20;
   ctx = canvas.getContext("2d");
   images = new ImageLoader();
-	images.load("pc","assets/pc.png");
+	images.load("pc", "assets/BombermanDSAlpha.png");
 	images.load("tiles", "assets/Tileset.png");
 	images.load("bombs", "assets/Bombs.png");
 	images.load("powerups", "assets/Powerups.png");
-	images.load("MainMenuBG", "assets/MMenuBG.png");
+	images.load("MainMenuBG", "assets/MMenuBg.png");
   map = new Map(Math.floor(canvas.height/40), Math.floor(canvas.width/40));
   //map.images = images;
   map.setCells([
@@ -71,6 +71,12 @@ function init(){
   pc1.imunidade = 1;
 	pc1.imgkey = "pc";
 	pc1.power = 2;
+	pc1.poses = [
+    {row: 0, col:0, w: 21.5, h:32 , frames:5, v: 8},
+    {row: 1, col:0, w: 21.5, h:33.2 , frames:5, v: 8},
+    {row: 2, col:0, w: 21.5, h:33.2 , frames:5, v: 8},
+    {row: 3, col:0, w: 21.5, h:32 , frames:5, v: 8},
+	];
 
   pc2 = new Sprite();
   pc2.id = "2";
@@ -79,6 +85,12 @@ function init(){
   pc2.vidas = 3;
   pc2.imunidade = 1;
 	pc2.imgkey = "pc";
+	pc2.poses = [
+    {row: 0, col:0, w: 21.5, h:32 , frames:5, v: 8},
+    {row: 1, col:0, w: 21.5, h:33.2 , frames:5, v: 8},
+    {row: 2, col:0, w: 21.5, h:33.2 , frames:5, v: 8},
+    {row: 3, col:0, w: 21.5, h:32 , frames:5, v: 8},
+	];
 	
 	isMainMenu = true;
   initControls();
@@ -380,26 +392,26 @@ function initControls(){
 			break;
 			case 65:
 					pc1.vx = -100;
-			pc1.vy = 0;
-					pc1.pose = 2;
+					pc1.vy = 0;
+					pc1.pose = 3;
 					e.preventDefault();
 					break;
 				case 87:
 					pc1.vy = -100;
-			pc1.vx = 0;
-					pc1.pose = 3;
+					pc1.vx = 0;
+					pc1.pose = 2;
 					e.preventDefault();
 					break;
 				case 68:
 					pc1.vx = 100;
-			pc1.vy = 0;
-					pc1.pose = 0;
+					pc1.vy = 0;
+					pc1.pose = 1;
 					e.preventDefault();
 					break;
 				case 83:
 					pc1.vy = 100;
-			pc1.vx = 0;
-					pc1.pose = 1;
+					pc1.vx = 0;
+					pc1.pose = 0;
 					e.preventDefault();
 					break;
 		
@@ -408,27 +420,27 @@ function initControls(){
 			dropBomb(pc2, map);
 			break;
 				case 37:
-			pc2.vx = -100;
-			pc2.vy = 0;
-					pc2.pose = 2;
+					pc2.vx = -100;
+					pc2.vy = 0;
+					pc2.pose = 3;
 					e.preventDefault();
 					break;
 				case 38:
 					pc2.vy = -100;
-			pc2.vx = 0;
-					pc2.pose = 3;
+					pc2.vx = 0;
+					pc2.pose = 2;
 					e.preventDefault();
 					break;
 				case 39:
 					pc2.vx = 100;
-			pc2.vy = 0;
-					pc2.pose = 0;
+					pc2.vy = 0;
+					pc2.pose = 1;
 					e.preventDefault();
 					break;
 				case 40:
 					pc2.vy = 100;
-			pc2.vx = 0;
-					pc2.pose = 1;
+					pc2.vx = 0;
+					pc2.pose = 0;
 					e.preventDefault();
 					break;
 				default:

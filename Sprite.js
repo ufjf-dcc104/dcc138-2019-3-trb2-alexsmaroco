@@ -8,13 +8,7 @@ function Sprite(){
   this.SIZE = 16;
   this.pose = 0;
   this.frame = 0;
-  this.poses = [
-    {row: 11, col:1, frames:8, v: 4},
-    {row: 10, col:1, frames:8, v: 4},
-    {row: 9, col:1, frames:8, v: 4},
-    {row: 8, col:1, frames:8, v: 4},
-    {row: 11, col:0, frames:1, v: 4},
-  ];
+  this.poses = [];
   this.imgkey = "pc";
   this.cooldown = 1;
   this.bombs = [];
@@ -43,6 +37,23 @@ Sprite.prototype.desenharSombra = function (ctx) {
 };
 
 Sprite.prototype.desenharPose = function (ctx, images) {
+	this.w = this.poses[this.pose].w;
+	this.h = this.poses[this.pose].h;
+	ctx.save();
+	ctx.translate(this.x, this.y);
+	images.drawFrame(ctx,
+    this.imgkey,
+    this.poses[this.pose].row,
+    Math.floor(this.frame),
+    -1*(this.poses[this.pose].w/2),-1*(this.poses[this.pose].h),
+	this.poses[this.pose].w, this.poses[this.pose].h,
+	this.poses[this.pose].w*1.3, this.poses[this.pose].h*1.3
+  );
+  ctx.restore();
+};
+
+/*
+Sprite.prototype.desenharPose = function (ctx, images) {
   ctx.save();
   ctx.translate(this.x, this.y);
   images.drawFrame(ctx,
@@ -53,7 +64,7 @@ Sprite.prototype.desenharPose = function (ctx, images) {
   );
   ctx.restore();
 };
-
+*/
 Sprite.prototype.desenharBomba = function(ctx) {
 	ctx.save();
 	ctx.translate(this.x, this.y);
