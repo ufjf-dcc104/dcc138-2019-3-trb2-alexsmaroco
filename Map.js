@@ -13,6 +13,7 @@ function Map(rows, columns) {
     }
 	}
 	this.animExplosion = []; // guarda animações de explosoes
+	this.paredeExplosion = [];
 }
 
 
@@ -60,7 +61,14 @@ Map.prototype.desenhar = function (ctx, images) {
     if(this.animExplosion[i].duracao < 0) {
       this.animExplosion.splice(i,1);
     }
-  }
+	}
+	for(var i = this.paredeExplosion.length-1; i >= 0; i--) {
+		this.paredeExplosion[i].desenhaExplosaoParede(ctx, images);
+		this.paredeExplosion[i].duracao-=dt;
+		if(this.paredeExplosion[i].duracao < 0) {
+			this.paredeExplosion.splice(i, 1);
+		}
+	}
   
 };
 

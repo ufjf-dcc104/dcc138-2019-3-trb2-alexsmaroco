@@ -24,6 +24,7 @@ function init(){
 	images.load("bombs", "assets/Bombs.png");
 	images.load("powerups", "assets/Powerups.png");
 	images.load("MainMenuBG", "assets/MMenuBg.png");
+	images.load("expPar", "assets/exp2_0.png");
   map = new Map(Math.floor(canvas.height/40), Math.floor(canvas.width/40));
   //map.images = images;
   map.setCells([
@@ -195,6 +196,17 @@ function chainReaction(gy, gx) {
 	}
 }
 
+function explodeParede(map, gy, gx) {
+	var expPar = new Sprite();
+					expPar.x = gx * map.SIZE + 20;
+					expPar.y = gy * map.SIZE + 20;
+					expPar.w = 64;
+					expPar.h = 64;
+					expPar.duracao = 0.25;
+					expPar.imgkey = "expPar";
+					map.paredeExplosion.push(expPar);
+}
+
 function explodir(bomb, map) {
 	var gx = Math.floor(bomb.x/map.SIZE);
 	var gy = Math.floor(bomb.y/map.SIZE);
@@ -226,6 +238,7 @@ function explodir(bomb, map) {
 					break;
 				case "paredeDest":
 					map.cells[gy-i][gx].tipo = "vazio";
+					explodeParede(map, (gy-i), gx);
 					destruir1 = false;
 					break;
 				case "bomba":
@@ -249,6 +262,7 @@ function explodir(bomb, map) {
 					break;
 				case "paredeDest":
 					map.cells[gy+i][gx].tipo = "vazio";
+					explodeParede(map, (gy+i), gx);
 					destruir2 = false;
 					break;
 				case "bomba":
@@ -272,6 +286,7 @@ function explodir(bomb, map) {
 					break;
 				case "paredeDest":
 					map.cells[gy][gx-i].tipo = "vazio";
+					explodeParede(map, gy, (gx-i));
 					destruir3 = false;
 					break;
 				case "bomba":
@@ -295,6 +310,7 @@ function explodir(bomb, map) {
 					break;
 				case "paredeDest":
 					map.cells[gy][gx+i].tipo = "vazio";
+					explodeParede(map, gy, (gx+i));
 					destruir4 = false;
 					break;
 				case "bomba":
@@ -359,17 +375,17 @@ function dropBomb(player, map) {
 function desenhaInfo(ctx) {
   ctx.font = "15px Arial";
   ctx.fillStyle = "blue";
-  ctx.fillText("Player 1: " + pc1.vidas + " vida(s)       " + "Player 2: " + pc2.vidas + " vida(s)", 100, 455+80);
+  ctx.fillText("Player 1: " + pc1.vidas + " vida(s)       " + "Player 2: " + pc2.vidas + " vida(s)", this.canvas.width/2 - 100, 455+80);
   if(pc1.vidas <= 0) {
 	ctx.font = "50px Arial";
 	ctx.fillStyle = "blue";
-	ctx.fillText("Player 2 venceu!", 50, this.canvas.height/2);
+	ctx.fillText("Player 2 venceu!", this.canvas.width/2 - 50, this.canvas.height/2);
     this.fim = true;
   }
   if(pc2.vidas <= 0) {
     ctx.font = "50px Arial";
 	ctx.fillStyle = "blue";
-	ctx.fillText("Player 1 venceu!", 50, this.canvas.height/2);
+	ctx.fillText("Player 1 venceu!", this.canvas.width/2 - 50, this.canvas.height/2);
     this.fim = true;
   }
 }
