@@ -39,7 +39,10 @@ Sprite.prototype.desenharSombra = function (ctx) {
 Sprite.prototype.desenharPose = function (ctx, images) {
 	this.w = this.poses[this.pose].w;
 	this.h = this.poses[this.pose].h;
-	ctx.save();
+  ctx.save();
+  if(this.imunidade > 0) {
+    ctx.globalAlpha = 0.5*Math.cos(60*this.imunidade);
+  }
 	ctx.translate(this.x, this.y);
 	images.drawFrame(ctx,
     this.imgkey,
@@ -84,6 +87,26 @@ Sprite.prototype.desenhaPowerup = function(ctx, images) {
     images.drawPowerup(ctx, "powerups", this.tipo,
     -16, -16,
     images.powerupCut[this.tipo].w*1.3, images.powerupCut[this.tipo].h*1.3
+    );
+    ctx.restore();
+}
+
+Sprite.prototype.desenhaExplosaoParede = function(ctx, images) {
+    this.frame+= 30*dt;
+    if(this.frame >= 16) this.frame = 16;
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    var F = Math.floor(this.frame);
+    ctx.drawImage(
+        images.images[this.imgkey],
+        (F%4)*64,
+        Math.floor(F/4)*64,
+        64,
+        64,
+        -this.w/2,
+        -this.h/2,
+        this.w,
+        this.h 
     );
     ctx.restore();
 }
